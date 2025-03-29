@@ -79,3 +79,20 @@ button[disabled] {
   background: #ccc;
   cursor: not-allowed;
 }
+
+@media (max-width: 480px) {
+  .auth-box, .profile-box, .todo-container {
+    padding: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .filters,
+  .list-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  input {
+    font-size: 1rem;
+  }
+}
