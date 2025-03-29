@@ -1,4 +1,4 @@
 export const environment = {
-  production: false,
-  backendUrl: ''
+  production: true,
+  backendUrl: 'https://todo-az5x.onrender.com/api'
 };
