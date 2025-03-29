@@ -4,6 +4,12 @@ A full-featured Todo app with user authentication, filters, drag & drop reorderi
 
 ---
 
+## 🌐 Live Demo
+
+- [https://kostodo.netlify.app](https://kostodo.netlify.app)
+
+---
+
 ## 🧱 Tech Stack
 
 ### 🔹 Frontend
