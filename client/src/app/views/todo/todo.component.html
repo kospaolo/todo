@@ -60,9 +60,16 @@
       @if(todo.dueDate) {
         <span
           class="due-icon"
+          (click)="toggleDueDate(todo._id)"
           [title]="'Due: ' + (todo.dueDate | date: 'dd.MM.yyyy') + ' (' + dueCountdown(todo.dueDate) + ')'">
           🕒
         </span>
+
+        @if (activeDueId() === todo._id) {
+          <div class="due-popup">
+            Due: {{ todo.dueDate | date: 'dd.MM.yyyy' }} ({{ dueCountdown(todo.dueDate) }})
+          </div>
+        }
       }
       <button (click)="deleteTodo(todo._id)">🗑️</button>
     </li>

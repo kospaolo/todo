@@ -33,6 +33,7 @@ export class TodoComponent implements OnInit {
   showFilters = signal(false);
   public authService = inject(AuthService);
   private router = inject(Router);
+  activeDueId = signal<string | null>(null);
 
   ngOnInit() {
     const local = loadTodos();
@@ -180,5 +181,11 @@ export class TodoComponent implements OnInit {
 
   goToProfile() {
     this.router.navigateByUrl('/profile');
+  }
+
+  toggleDueDate(todoId: string) {
+    const current = this.activeDueId();
+    console.log(current)
+    this.activeDueId.set(current === todoId ? null : todoId);
   }
 }
