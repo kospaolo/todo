@@ -2,6 +2,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {jwtDecode} from 'jwt-decode';
 import {JwtPayload} from '../models/jwtPayload.model';
+import {environment} from '../../environments/environment';
 
 const TOKEN_KEY = 'auth_token';
 
@@ -9,7 +10,7 @@ const TOKEN_KEY = 'auth_token';
 export class AuthService {
   private http = inject(HttpClient);
   isLoggedIn = signal<boolean>(!!localStorage.getItem(TOKEN_KEY));
-  readonly apiUrl = 'http://localhost:3000/api';
+  readonly apiUrl = `${environment.backendUrl}`;
 
   login(username: string, password: string) {
     return this.http.post<{ token: string }>(`${this.apiUrl}/login`, { username, password });

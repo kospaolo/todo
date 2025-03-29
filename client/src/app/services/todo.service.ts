@@ -3,10 +3,11 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Todo} from '../models/todo.model';
 import {Filter} from '../models/filter.model';
+import {environment} from '../../environments/environment';
 
 @Injectable({providedIn: 'root'})
 export class TodoService {
-  private apiUrl = 'http://localhost:3000/api/todos';
+  private apiUrl = `${environment.backendUrl}/todos`;
   private http = inject(HttpClient);
 
   getTodos(filter: Filter): Observable<Todo[]> {
