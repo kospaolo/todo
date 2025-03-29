@@ -1,0 +1,72 @@
+<router-outlet></router-outlet>
+@if(authService.isLoggedIn()) {
+  <div class="user-bar">
+    👋 Welcome, <strong>{{ username }}</strong>!
+    <button (click)="logout()">Logout</button>
+  </div>
+}
+
+<h1>Todo List</h1>
+
+<form (submit)="addTodo($event)">
+  <input type="text" [(ngModel)]="newTodoText" name="todoText" required placeholder="Add a new task..."/>
+  <input type="date" [(ngModel)]="newDueDate" name="dueDate" />
+  <button type="submit">Add</button>
+</form>
+
+<button (click)="toggleFilters()" class="filter-toggle" [attr.aria-expanded]="showFilters()">
+  <span [class.spin]="showFilters()">⚙️</span>
+</button>
+
+@if(showFilters()) {
+  <div class="filters">
+    <button (click)="setFilter('all')" [class.active]="filter() === 'all'">All</button>
+    <button (click)="setFilter('active')" [class.active]="filter() === 'active'">Active</button>
+    <button (click)="setFilter('done')" [class.active]="filter() === 'done'">Done</button>
+    <button (click)="setFilter('today')" [class.active]="filter() === 'today'">Today</button>
+    <button (click)="setFilter('week')" [class.active]="filter() === 'week'">This Week</button>
+  </div>
+
+  <div class="list-actions">
+    <button (click)="markAllDone()">Mark all as done</button>
+    <button (click)="clearCompleted()">Clear completed</button>
+  </div>
+}
+
+<ul cdkDropList (cdkDropListDropped)="drop($event)">
+  @for (todo of todos(); track todo.id) {
+    <li cdkDrag
+        @todoAnim
+        [class.overdue]="todo.dueDate && isOverdue(todo.dueDate)"
+        [class.done]="todo.done">
+      <span cdkDragHandle class="drag-handle">::</span>
+
+      <label>
+        <input type="checkbox" [checked]="todo.done" (change)="toggleDone(todo)" />
+
+        @if (editingId() === todo.id) {
+          <input [(ngModel)]="editableText"
+                 (keydown.enter)="saveEdit(todo)"
+                 autofocus
+                 @editFade/>
+
+          <button (click)="saveEdit(todo)">✅</button>
+          <button (click)="cancelEdit()">❌</button>
+        } @else {
+          <span [class.done]="todo.done">{{ todo.text }}</span>
+          <button (click)="startEdit(todo)">✏️</button>
+        }
+      </label>
+      @if(todo.dueDate) {
+        <span
+          class="due-icon"
+          [title]="'Due: ' + (todo.dueDate | date: 'dd.MM.yyyy') + ' (' + dueCountdown(todo.dueDate) + ')'">
+          🕒
+        </span>
+      }
+      <button (click)="deleteTodo(todo.id)">🗑️</button>
+    </li>
+  } @empty {
+    <li class="empty-message">No todos yet. Add one above ☝️</li>
+  }
+</ul>

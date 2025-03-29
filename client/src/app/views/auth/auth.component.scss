@@ -1,0 +1,81 @@
+.auth-box {
+  max-width: 360px;
+  margin: 4rem auto;
+  padding: 2rem;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background: #fafafa;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  text-align: center;
+
+  h2 {
+    margin-bottom: 1rem;
+    color: #8b1d2a;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.6rem;
+    margin: 0.5rem 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+
+    &:focus {
+      border-color: #8b1d2a;
+      outline: none;
+    }
+  }
+
+  button {
+    width: 100%;
+    padding: 0.7rem;
+    margin-top: 1rem;
+    font-size: 1rem;
+    background: #8b1d2a;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #721622;
+    }
+  }
+
+  .message {
+    margin-top: 1rem;
+    color: #444;
+    font-style: italic;
+    font-size: 0.95rem;
+  }
+
+  a {
+    display: block;
+    margin-top: 1.5rem;
+    color: #8b1d2a;
+    font-size: 0.95rem;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
+.remember {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  margin: 0.8rem 0 0;
+  color: #444;
+
+  input[type="checkbox"] {
+    accent-color: #8b1d2a;
+  }
+}
+
+button[disabled] {
+  background: #ccc;
+  cursor: not-allowed;
+}

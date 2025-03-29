@@ -1,0 +1,27 @@
+<div class="auth-box">
+  <h2>{{ isLoginMode() ? 'Login to your account' : 'Create a new account' }}</h2>
+
+  <form (submit)="submit(); $event.preventDefault()">
+    <input type="text" [(ngModel)]="username" name="username" placeholder="Username" required />
+    <input type="password" [(ngModel)]="password" name="password" placeholder="Password" required />
+
+    <input *ngIf="!isLoginMode()" type="password" [(ngModel)]="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required />
+
+    <label class="remember">
+      <input type="checkbox" [(ngModel)]="remember" name="remember" style="width: unset;" />
+      Remember me
+    </label>
+
+    <button type="submit" [disabled]="loading()">
+      {{ loading() ? 'Please wait...' : isLoginMode() ? 'Login' : 'Register' }}
+    </button>
+  </form>
+
+  @if(message()) {
+    <p class="message">{{ message() }}</p>
+  }
+
+  <a href="#" (click)="toggleMode(); $event.preventDefault()">
+    {{ isLoginMode() ? 'Don\'t have an account? Register' : 'Already registered? Log in' }}
+  </a>
+</div>
