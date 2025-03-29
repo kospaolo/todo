@@ -1,0 +1,28 @@
+<div class="profile-box">
+  <button class="back-btn" (click)="router.navigateByUrl('/')">🡐 Back</button>
+
+  <h2>Your Profile</h2>
+
+  <p>👤 <strong>{{ username }}</strong></p>
+
+  <form (submit)="changeUsername(); $event.preventDefault()">
+    <input type="text" [(ngModel)]="newUsername" name="newUsername" placeholder="New username" required />
+    <input type="password" [(ngModel)]="usernamePassword" name="usernamePassword" placeholder="Current password" required />
+    <button type="submit">Change Username</button>
+  </form>
+
+  <p *ngIf="usernameMessage">{{ usernameMessage }}</p>
+
+  <form (submit)="changePassword(); $event.preventDefault()">
+    <input type="password" [(ngModel)]="oldPassword" name="old" placeholder="Old password" required />
+    <input type="password" [(ngModel)]="newPassword" name="new" placeholder="New password" required />
+    <button type="submit">Change Password</button>
+  </form>
+
+  @if(passwordMessage) {
+    <p>{{ passwordMessage }}</p>
+  }
+
+  <button class="delete" (click)="confirmDelete()">Delete Account</button>
+  <button class="logout" (click)="logout()">Logout</button>
+</div>

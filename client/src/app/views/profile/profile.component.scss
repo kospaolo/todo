@@ -1,0 +1,53 @@
+.profile-box {
+  max-width: 400px;
+  margin: 3rem auto;
+  padding: 2rem;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background: #fff;
+  text-align: center;
+
+  input {
+    display: block;
+    width: 100%;
+    padding: 0.6rem;
+    margin: 0.5rem 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+
+  button {
+    margin-top: 1rem;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .logout {
+    background: #8b1d2a;
+    color: white;
+  }
+
+  .delete {
+    background: #ccc;
+    color: black;
+    margin-right: 1rem;
+  }
+
+  p {
+    margin-top: 1rem;
+    font-size: 0.95rem;
+  }
+}
+
+.back-btn {
+  margin: unset;
+  border: none;
+  background: transparent;
+  color: #8b1d2a;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+}

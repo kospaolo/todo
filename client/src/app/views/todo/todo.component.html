@@ -1,7 +1,7 @@
 <router-outlet></router-outlet>
 @if(authService.isLoggedIn()) {
   <div class="user-bar">
-    👋 Welcome, <strong>{{ username }}</strong>!
+    👋 Welcome, <strong class="clickable" (click)="goToProfile()">{{ username }}</strong>!
     <button (click)="logout()">Logout</button>
   </div>
 }

@@ -177,4 +177,8 @@ export class TodoComponent implements OnInit {
   get username(): string | null {
     return this.authService.getUsername();
   }
+
+  goToProfile() {
+    this.router.navigateByUrl('/profile');
+  }
 }
