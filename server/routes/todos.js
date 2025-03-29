@@ -1,23 +1,18 @@
 const express = require('express');
 const { authMiddleware } = require('../middleware/auth');
-const { todos } = require('../data/store');
-
-let id = 1;
+const Todo = require('../models/Todo');
 
 const router = express.Router();
+router.use(authMiddleware);
 
 const isSameDay = (a, b) =>
     a.getFullYear() === b.getFullYear() &&
     a.getMonth() === b.getMonth() &&
     a.getDate() === b.getDate();
 
-router.get('/', authMiddleware, (req, res) => {
+router.get('/', authMiddleware, async (req, res) => {
     const filter = req.query.filter;
-    const userId = req.user.userId;
-
-    const userTodos = todos.filter(t => t.userId === userId);
-
-    let result = userTodos;
+    let result = await Todo.find({userId: req.user.userId}).sort({order: 1});
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -45,64 +40,83 @@ router.get('/', authMiddleware, (req, res) => {
     res.json(result);
 });
 
-router.post('/', authMiddleware, (req, res) => {
-    const { text, dueDate } = req.body;
+router.post('/', authMiddleware, async (req, res) => {
+    const {text, dueDate} = req.body;
     const userId = req.user.userId;
 
-    if (!text) return res.status(400).json({ error: 'Text is required' });
+    if (!text) return res.status(400).json({error: 'Text is required'});
 
-    const newTodo = {
-        id: id++,
+    const newTodo = await Todo.create({
         text,
-        done: false,
-        order: todos.length,
         dueDate,
-        userId
-    };
+        userId: req.user.userId,
+        order: await Todo.countDocuments({userId: req.user.userId})
+    });
 
-    todos.push(newTodo);
     res.status(201).json(newTodo);
 });
 
-router.put('/:id', authMiddleware, (req, res) => {
-    const toDoId = parseInt(req.params.id);
-    const { done, text } = req.body;
-    const userId = req.user.userId;
-
-    const todo = todos.find(t => t.id === toDoId && t.userId === userId);
-    if (!todo) return res.status(404).json({ error: 'Todo not found' });
-
-    if (done !== undefined) todo.done = done;
-    if (text !== undefined) todo.text = text;
-
-    res.json(todo);
-});
-
-router.delete('/:id', authMiddleware, (req, res) => {
-    const toDoId = parseInt(req.params.id);
-    const userId = req.user.userId;
-
-    const index = todos.findIndex(t => t.id === toDoId && t.userId === userId);
-    if (index === -1) return res.status(404).json({ error: 'Todo not found' });
-
-    todos.splice(index, 1);
-    res.status(204).send();
-});
-
-router.put('/reorder', authMiddleware, (req, res) => {
+router.put('/reorder', authMiddleware, async (req, res) => {
     const userId = req.user.userId;
     const newOrder = req.body;
 
-    newOrder.forEach(({ id, order }) => {
-        const todo = todos.find(t => t.id === Number(id) && t.userId === userId);
-        if (todo) {
-            todo.order = order;
-        } else {
-            console.warn(`⚠️ Todo with id ${id} not found or unauthorized`);
-        }
-    });
+    try {
+        const bulkOps = newOrder.map(({ id, order }) => ({
+            updateOne: {
+                filter: { _id: id, userId },
+                update: { $set: { order } }
+            }
+        }));
 
-    res.json({ success: true });
+        await Todo.bulkWrite(bulkOps);
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to reorder todos' });
+    }
+});
+
+router.put('/:id', authMiddleware, async (req, res) => {
+    const todoId = req.params.id;
+    const { done, text } = req.body;
+    const userId = req.user.userId;
+
+    try {
+        const todo = await Todo.findOne({ _id: todoId, userId });
+
+        if (!todo) {
+            return res.status(404).json({ error: 'Todo not found' });
+        }
+
+        if (done !== undefined) todo.done = done;
+        if (text !== undefined) todo.text = text;
+
+        await todo.save();
+
+        res.json(todo);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+router.delete('/:id', authMiddleware, async (req, res) => {
+    const todoId = req.params.id;
+    const userId = req.user.userId;
+
+    try {
+        const result = await Todo.findOneAndDelete({ _id: todoId, userId });
+
+        if (!result) {
+            return res.status(404).json({ error: 'Todo not found' });
+        }
+
+        res.status(204).send();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Server error' });
+    }
 });
 
 module.exports = router;

@@ -28,7 +28,7 @@ export class TodoComponent implements OnInit {
   newDueDate = '';
   private toDoService = inject(TodoService);
   filter = signal<Filter>('all');
-  editingId = signal<number | null>(null);
+  editingId = signal<string | null>(null);
   editableText = '';
   showFilters = signal(false);
   public authService = inject(AuthService);
@@ -62,11 +62,11 @@ export class TodoComponent implements OnInit {
     });
   }
 
-  deleteTodo(id: number) {
+  deleteTodo(id: string) {
     if(!id) return;
 
     this.toDoService.deleteTodo(id).subscribe(() => {
-      this.todos.update((prev) => prev.filter(todo => todo.id !== id));
+      this.todos.update((prev) => prev.filter(todo => todo._id !== id));
       saveTodos(this.todos());
     });
   }
@@ -74,8 +74,8 @@ export class TodoComponent implements OnInit {
   toggleDone(todo: Todo) {
     if(!todo) return;
 
-    this.toDoService.toggleDone(todo.id, !todo.done).subscribe((updatedTodo) => {
-      this.todos.update(prev => prev.map(t => t.id === updatedTodo.id ? updatedTodo : t));
+    this.toDoService.toggleDone(todo._id, !todo.done).subscribe((updatedTodo) => {
+      this.todos.update(prev => prev.map(t => t._id === updatedTodo._id ? updatedTodo : t));
       saveTodos(this.todos());
     });
   }
@@ -102,7 +102,7 @@ export class TodoComponent implements OnInit {
   }
 
   startEdit(todo: Todo) {
-    this.editingId.set(todo.id);
+    this.editingId.set(todo._id);
     this.editableText = todo.text;
   }
 
@@ -118,9 +118,9 @@ export class TodoComponent implements OnInit {
       return;
     }
 
-    this.toDoService.toggleDone(todo.id, todo.done, updatedText).subscribe((updatedTodo) => {
+    this.toDoService.toggleDone(todo._id, todo.done, updatedText).subscribe((updatedTodo) => {
       this.todos.update((prev) =>
-        prev.map((t) => (t.id === updatedTodo.id ? updatedTodo : t))
+        prev.map((t) => (t._id === updatedTodo._id ? updatedTodo : t))
       );
       saveTodos(this.todos());
       this.cancelEdit();
@@ -135,7 +135,7 @@ export class TodoComponent implements OnInit {
     this.todos.set(reordered);
     saveTodos(reordered);
 
-    const orderPayload = reordered.map(t => ({ id: t.id, order: t.order }));
+    const orderPayload = reordered.map(t => ({ id: t._id, order: t.order }));
     this.toDoService.reorderTodos(orderPayload).subscribe();
   }
 

@@ -18,17 +18,17 @@ export class TodoService {
     return this.http.post<Todo>(this.apiUrl, { text, dueDate });
   }
 
-  deleteTodo(id: number): Observable<void> {
+  deleteTodo(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  toggleDone(id: number, done: boolean, text?: string): Observable<Todo> {
+  toggleDone(id: string, done: boolean, text?: string): Observable<Todo> {
     const body: any = { done };
     if (text !== undefined) body.text = text;
     return this.http.put<Todo>(`${this.apiUrl}/${id}`, body);
   }
 
-  reorderTodos(updatedOrder: { id: number; order: number }[]): Observable<{ success: boolean }> {
+  reorderTodos(updatedOrder: { id: string; order: number }[]): Observable<{ success: boolean }> {
     return this.http.put<{ success: boolean }>(`${this.apiUrl}/reorder`, updatedOrder);
   }
 }

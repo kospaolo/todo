@@ -34,7 +34,7 @@
 }
 
 <ul cdkDropList (cdkDropListDropped)="drop($event)">
-  @for (todo of todos(); track todo.id) {
+  @for (todo of todos(); track todo._id) {
     <li cdkDrag
         @todoAnim
         [class.overdue]="todo.dueDate && isOverdue(todo.dueDate)"
@@ -44,7 +44,7 @@
       <label>
         <input type="checkbox" [checked]="todo.done" (change)="toggleDone(todo)" />
 
-        @if (editingId() === todo.id) {
+        @if (editingId() === todo._id) {
           <input [(ngModel)]="editableText"
                  (keydown.enter)="saveEdit(todo)"
                  autofocus
@@ -64,7 +64,7 @@
           🕒
         </span>
       }
-      <button (click)="deleteTodo(todo.id)">🗑️</button>
+      <button (click)="deleteTodo(todo._id)">🗑️</button>
     </li>
   } @empty {
     <li class="empty-message">No todos yet. Add one above ☝️</li>

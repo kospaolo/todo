@@ -1,17 +1,18 @@
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const SECRET = 'supersecret';
+const SECRET = process.env.JWT_SECRET;
 
 function authMiddleware(req, res, next) {
     const authHeader = req.headers.authorization;
-    if (!authHeader) return res.status(401).json({ message: 'Missing token' });
+    if (!authHeader || !authHeader.startsWith('Bearer ')) res.status(401).json({ message: 'No token provided' });
 
     const token = authHeader.split(' ')[1];
     try {
         const decoded = jwt.verify(token, SECRET);
-        req.user = decoded;
+        req.user = decoded; // Attach user to request
         next();
-    } catch {
-        res.status(403).json({ message: 'Invalid or expired token' });
+    } catch (err) {
+        return res.status(403).json({ message: 'Invalid or expired token' });
     }
 }
 
